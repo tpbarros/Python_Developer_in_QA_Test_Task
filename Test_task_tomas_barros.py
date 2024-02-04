@@ -58,7 +58,6 @@ def synchFolders(sourceFolderPath, replicaFolderPath, logFilePath):
                     filesSet.add(entry.name)
                 else:
                     dirsSet.add(entry.name)
-                    #synchFolders(sourceFolderPath+'\\'+entry.name, 'replica')
         return filesSet, dirsSet
     
 
