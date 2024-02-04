@@ -15,7 +15,7 @@ def synchTimeLoop(sourceFolderPath, replicaFolderPath, synchInterval,
                   logFilePath):
     '''Preforms synchronization every synchInterval seconds
     
-    Agrs:
+    Args:
         sourceFolderPath: the path of the source folder
         replicaFolderPath: the path of the replica folder
         synchInterval: how much time passes between synchronization
@@ -34,7 +34,28 @@ def synchTimeLoop(sourceFolderPath, replicaFolderPath, synchInterval,
 
 def synchFolders(sourceFolderPath, replicaFolderPath, synchInterval,
                 logFilePath):
-    pass
+    
+    # Go thru all the entries in folderPath and separate it into a set
+    # of all the files and a set of all the directories
+    def separateFilesAndDirs(folderPath):
+        ''' Go thru all the entries in folderPath and separate it into a set
+            of all the files and a set of all the directories
+
+        Args:
+            folderPath: path of the folder being worked on
+        '''
+        filesSet = set()
+        dirsSet = set()
+        with os.scandir(folderPath) as entries:
+            for entry in entries:
+                if entry.is_file():
+                    filesSet.add(entry.name)
+                else:
+                    dirsSet.add(entry.name)
+        return filesSet, dirsSet
+
+    sourceFilesSet, sourceDirsSet = separateFilesAndDirs(sourceFolderPath)
+    replicaFilesSet, replicaDirsSet = separateFilesAndDirs(replicaFolderPath)
 
 # Read folder paths, synchronization interval and log file path from command
 # line arguments, in that order
