@@ -35,8 +35,6 @@ def synchTimeLoop(sourceFolderPath, replicaFolderPath, synchInterval,
 def synchFolders(sourceFolderPath, replicaFolderPath, synchInterval,
                 logFilePath):
     
-    # Go thru all the entries in folderPath and separate it into a set
-    # of all the files and a set of all the directories
     def separateFilesAndDirs(folderPath):
         ''' Go thru all the entries in folderPath and separate it into a set
             of all the files and a set of all the directories
