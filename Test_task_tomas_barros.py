@@ -9,6 +9,8 @@ Veeam test task
 
 import sys
 import time
+import os
+import shutil
 
 
 def synchTimeLoop(sourceFolderPath, replicaFolderPath, synchInterval,
@@ -32,8 +34,7 @@ def synchTimeLoop(sourceFolderPath, replicaFolderPath, synchInterval,
             print("Synchronization terminated.")
             raise SystemExit
 
-def synchFolders(sourceFolderPath, replicaFolderPath, synchInterval,
-                logFilePath):
+def synchFolders(sourceFolderPath, replicaFolderPath, logFilePath):
     
     def separateFilesAndDirs(folderPath):
         ''' Go thru all the entries in folderPath and separate it into a set
@@ -54,6 +55,26 @@ def synchFolders(sourceFolderPath, replicaFolderPath, synchInterval,
 
     sourceFilesSet, sourceDirsSet = separateFilesAndDirs(sourceFolderPath)
     replicaFilesSet, replicaDirsSet = separateFilesAndDirs(replicaFolderPath)
+
+    # files and folders that are in the replica folder but not in the source 
+    # folder need to be deleted
+    filesToDelete = replicaFilesSet - sourceFilesSet
+    for file in filesToDelete:
+        os.remove(replicaFolderPath+'\\'+file)
+    dirsToDelete = replicaDirsSet - sourceDirsSet
+    for dirs in dirsToDelete:
+        shutil.rmtree(replicaFolderPath+'\\'+dirs)
+        
+    # the files in the source foulder need to be copied to the replica folder.
+    for file in sourceFilesSet:
+        shutil.copy2(sourceFolderPath+'\\'+file, replicaFolderPath)
+    # now repeat the process for all the subfolders.
+    for dirs in sourceDirsSet:
+        # If this subdirectory does not exist in the replica folder it needs to
+        # be created
+        if dirs not in replicaDirsSet:
+            os.mkdir(replicaFolderPath+'\\'+dirs)
+        synchFolders(sourceFolderPath+'\\'+dirs, replicaFolderPath+'\\'+dirs)
 
 # Read folder paths, synchronization interval and log file path from command
 # line arguments, in that order
