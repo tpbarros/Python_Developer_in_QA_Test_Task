@@ -21,7 +21,7 @@ def synchTimeLoop(sourceFolderPath, replicaFolderPath, synchInterval,
         sourceFolderPath: the path of the source folder
         replicaFolderPath: the path of the replica folder
         synchInterval: how much time passes between synchronization
-        sourceFolderPath: the path of the source folder
+        logFilePath: path for the file where operations will be logged
     '''
     # it keeps synchromizing the two folders each synchInterval seconds until
     # the program is manually stopped
